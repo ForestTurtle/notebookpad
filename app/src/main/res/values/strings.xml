@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CollectingNumbers</string>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+
+    <string name="edit_message">This is your wall. Everything here is saved automatically to your
+        device for the next time you open this app.</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_display_message">My Message</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_notebook">Notebook</string>
+</resources>
