@@ -1,104 +1,104 @@
 package com.games.jefferson.collectingnumbers;
 
 import android.content.Intent;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.widget.TextView;
-import android.widget.ViewFlipper;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+/**
+ * The notebook objects
+ * Created by jeff on 7/28/2015.
+ */
+public class Notebook {
 
-public class Notebook extends AppCompatActivity {
+    public final static String NOTEBOOK_NUMBER = "com.games.jefferson.collectingnumbers.NUMBER";
+    public final static String RECENT = "com.games.jefferson.collectingnumbers.RECENT_PAGE";
+    public final static String NOTEBOOK_TITLE = "com.games.jefferson.collectingnumbers.TITLE";
+    private String title;
+    private int index; //unique for this notebook
+    private int recent;
+    private int image; //the number for the inmage
+    private Button button;
 
-    ViewFlipper notebookFlipper;
-    TextView textView;
-    float startX;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notebook);
-
-        notebookFlipper = (ViewFlipper)findViewById(R.id.notebook_flipper);
-
-        Intent intent = getIntent();
-        int notebook = intent.getIntExtra(MainActivity.NOTEBOOK_NUMBER, 0);
-        //load notebook here
-        textView = (TextView)findViewById(R.id.notebooknum);
-        textView.setTextSize(40);
-        textView.setText("This is notebook Number: " + notebook);
-        //-----
+    public Notebook(String t, int i, int img, View v){
+        this(t,i,img,0, v);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_notebook, menu);
-        return true;
+    public Notebook(String t, int i, int img, int r, View v){
+        title = t;
+        index = i;
+        image = img;
+        recent = r;
+        createNotebookButton(v);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+    public String getTitle() {
+        return title;
     }
 
-    public  boolean onTouchEvent(MotionEvent e){
-        int action = MotionEventCompat.getActionMasked(e);
+    public void setTitle(String title) {
+        this.title = title;
+        button.setText(title);
+    }
 
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
-                //textView.setText("Action was DOWN");
-                startX = e.getX();
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-                //textView.setText("Action was MOVE");
-                return true;
-            case (MotionEvent.ACTION_UP) : {
-                //textView.setText("Action was UP");
+    public int getImage() {
+        return image;
+    }
 
-                float endX = e.getX();
+    public void setImage(int image) {
+        this.image = image;
+        //button fix here
+    }
 
-                if (startX < endX) {//swiped right
-                    if (notebookFlipper.getDisplayedChild() == 0) {
-                        return true;
-                    }
-                    notebookFlipper.setInAnimation(this, R.anim.in_from_left);
-                    notebookFlipper.setOutAnimation(this, R.anim.out_to_right);
-                    notebookFlipper.showPrevious();
-                }
-                if (startX > endX) {//swiped left
-                    if (notebookFlipper.getDisplayedChild() == 2) {
-                        return true;
-                    }
-                    notebookFlipper.setInAnimation(this, R.anim.in_from_right);
-                    notebookFlipper.setOutAnimation(this, R.anim.out_to_left);
-                    notebookFlipper.showNext();
-                }
-                return true;
+    public int getRecent() {
+        return recent;
+    }
+
+    public void setRecent(int recent) {
+        this.recent = recent;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public Button getButton(){
+        return button;
+    }
+
+    /**
+     * Helper method to create the notebook button on the screen
+     */
+    private void createNotebookButton(View view){
+
+        //creating a new notebook button
+        Button temp = new Button(view.getContext());
+        temp.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT));
+        temp.setText(title);
+        temp.setId(index); //the notebook id
+
+        temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sendMessage(v);
+                goToNotebook(v);
             }
-            case (MotionEvent.ACTION_CANCEL) :
-               // textView.setText("Action was CANCEL");
-                return true;
-            case (MotionEvent.ACTION_OUTSIDE) :
-                textView.setText("Movement occurred outside bounds " +
-                        "of current screen element");
-                return true;
-            default :
-                return super.onTouchEvent(e);
-        }
+        });
+        button = temp;
+    }
+    /**
+     * changes the activity to the corresponding notebook
+     * @param v
+     */
+    public void goToNotebook(View v){
+        Intent intent = new Intent(v.getContext(), NotebookView.class);
+        intent.putExtra(NOTEBOOK_NUMBER, index);
+        intent.putExtra(RECENT, recent);
+        intent.putExtra(NOTEBOOK_TITLE, title);
+        v.getContext().startActivity(intent);
     }
 }

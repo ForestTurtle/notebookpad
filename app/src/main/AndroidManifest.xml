@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayMessageActivity"
+            android:name=".AddNotebookActivity"
             android:label="@string/title_activity_display_message"
             android:parentActivityName=".MainActivity" >
             <meta-data
@@ -35,7 +35,7 @@
                 android:value="com.games.jefferson.collectingnumbers.MainActivity" />
         </activity>
         <activity
-            android:name=".Notebook"
+            android:name=".NotebookView"
             android:label="@string/title_activity_notebook"
             android:parentActivityName=".MainActivity" >
             <meta-data
