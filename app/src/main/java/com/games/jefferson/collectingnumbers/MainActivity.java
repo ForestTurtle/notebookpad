@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         notebooksDb = new DatabaseController(getApplicationContext());
         Cursor notebookCursor = notebooksDb.getNotebooks();
         if(notebookCursor != null && notebookCursor.getCount()>0) {
-            while (!notebookCursor.isLast()){
+            while (notebookCursor.moveToNext()){
                 String title = notebookCursor.getString(0);
                 int notebookIndex = notebookCursor.getInt(1);
                 int imgId = notebookCursor.getInt(2);
@@ -75,15 +75,18 @@ public class MainActivity extends AppCompatActivity {
                 Notebook newNotebook = new Notebook(title, notebookIndex, imgId, recentPage, mainLayout);
                 notebookList.add(newNotebook);
                 myNotebooks.addView(newNotebook.getButton());
-                notebookCursor.moveToNext();
             }
             noNotebooks.setVisibility(View.GONE);
         }
 
         //notebook counter text setup
-        buttonCountText = (TextView)findViewById(R.id.count1);
-        buttonCountText.setText("button presses: " + notebookCount);
         notebookCount = notebookList.size(); //will need to change when deleting notebooks is a thing
+        buttonCountText = (TextView)findViewById(R.id.count1);
+        buttonCountText.setText("Notebooks Added: " + notebookCount);
+    }
+
+    protected void onStart(){
+        super.onStart();
     }
 
     /**
@@ -148,14 +151,18 @@ public class MainActivity extends AppCompatActivity {
                 sendMessage(this.getCurrentFocus());
                 return true;
             case R.id.action_search:
-                notebookList.get(0).setTitle("test");
+                //notebookList.get(0).setTitle("test");
+                notebooksDb.reset();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
 
     }
 
-
+    /**
+     * for debugging purposes
+     * @param view
+     */
     public void sendMessage(View view){
         Intent intent = new Intent(this, AddNotebookActivity.class);
         String message = wallText.getText().toString();
@@ -164,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * helper method that opens the popup propting the user to make a new notebook
+     * helper method that opens the popup prompting the user to make a new notebook
      * @param view
      */
     public void createNewNotebook(View view){
@@ -179,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called when the user enters the information to make a new notebook
-     * puts the notebook on teh screen and saves it to memory
+     * puts the notebook on the screen and saves it to memory
      * @param view
      */
     public void addNotebook(View view){
@@ -198,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         myNotebooks.addView(newNotebook.getButton());
 
         //save the new notebook to memory
-        notebooksDb.addNotebook(title, notebookCount, imgId, newNotebook.getRecent());
+        notebooksDb.addNotebook(title, newNotebook.getIndex(), imgId, newNotebook.getRecent());
 
         //refresh text
         buttonCountText.setText("Notebooks Added: " + notebookCount);

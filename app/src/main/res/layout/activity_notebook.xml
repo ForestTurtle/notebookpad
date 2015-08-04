@@ -7,18 +7,4 @@
     android:id="@+id/notebook_flipper"
     tools:context="com.games.jefferson.collectingnumbers.NotebookView">
 
-    <TextView android:text="@string/hello_world"
-        android:id="@+id/notebooknum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:hint="@string/hello_world"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:hint="@string/action_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </ViewFlipper>

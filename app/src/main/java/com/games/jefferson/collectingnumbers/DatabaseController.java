@@ -13,10 +13,14 @@ import android.database.sqlite.SQLiteDatabase;
 public class DatabaseController {
 
     private DatabaseHelper dbOpenHelper;
-    private SQLiteDatabase pagesDb;
+    private SQLiteDatabase writableDb;
 
-    //CREATE TABLE PagesTable (NotebookId int, PageNo int, Bookmark bit, PageText nvarchar(255));
+    //the pages table and columns
     public final static String PAGES_TABLE_NAME="PagesTable"; // name of table
+    public final static String PAGES_ID = "NotebookId";
+    public final static String PAGE_NUMBER = "PageNo";
+    public final static String PAGE_BOOKMARK = "Bookmark";
+    public final static String PAGE_TEXT = "PageText";
 
     //the notebook table and columns
     public final static String NOTEBOOK_TABLE_NAME="NotebookTable"; // name of table
@@ -27,7 +31,7 @@ public class DatabaseController {
 
     public DatabaseController(Context context){
         dbOpenHelper = new DatabaseHelper(context);
-        pagesDb = dbOpenHelper.getWritableDatabase();
+        writableDb = dbOpenHelper.getWritableDatabase();
     }
 
     /**
@@ -38,8 +42,40 @@ public class DatabaseController {
      * @param pageText
      * @return
      */
-    public long addPage(int notebookId, int pageNo, boolean bookmark,String pageText){
-        return 0;
+    public long savePage(int notebookId, int pageNo, boolean bookmark, String pageText){
+        ContentValues values = new ContentValues();
+        values.put(PAGES_ID, notebookId);
+        values.put(PAGE_NUMBER, pageNo);
+        values.put(PAGE_BOOKMARK, bookmark);
+        values.put(PAGE_TEXT, pageText);
+        return writableDb.insert(PAGES_TABLE_NAME, null, values);
+    }
+
+    public int updatePage(int notebookId, int pageNo, boolean bookmark, String pageText){
+        ContentValues values = new ContentValues();
+        values.put(PAGES_ID, notebookId);
+        values.put(PAGE_NUMBER, pageNo);
+        values.put(PAGE_BOOKMARK, bookmark);
+        values.put(PAGE_TEXT, pageText);
+        return writableDb.update(PAGES_TABLE_NAME, values, PAGES_ID+" = "+notebookId+
+                " AND "+PAGE_NUMBER+" = "+pageNo, null);
+    }
+
+    public Cursor getPage(int notebookId, int pageNo){
+        //table
+        //columns
+        //where clause
+        //extra args
+        //group by
+        //having
+        //orderby
+        //limit
+        Cursor mCursor = writableDb.query(PAGES_TABLE_NAME, null, PAGES_ID+" = "+notebookId+
+                " AND "+PAGE_NUMBER+" = "+pageNo, null, null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
     }
 //----------------------------------line dividing tables-------------------------------------------
     /**
@@ -56,8 +92,15 @@ public class DatabaseController {
         values.put(NOTEBOOK_ID, notebookId);
         values.put(NOTEBOOK_IMG, notebookImg);
         values.put(RECENT_PAGE, recentPage);
-        return pagesDb.insert(NOTEBOOK_TABLE_NAME, null, values);
+        return writableDb.insert(NOTEBOOK_TABLE_NAME, null, values);
     }
+
+    public int updateRecent(int notebookId, int recentPage){
+        ContentValues values = new ContentValues();
+        values.put(RECENT_PAGE, recentPage);
+        return writableDb.update(NOTEBOOK_TABLE_NAME, values, NOTEBOOK_ID + " = " + notebookId, null);
+    }
+
 
     /**
      * gets all the notebooks in the databse
@@ -72,16 +115,23 @@ public class DatabaseController {
         //having
         //orderby
         //limit
-        Cursor mCursor = pagesDb.query(NOTEBOOK_TABLE_NAME, null, null, null, null, null, NOTEBOOK_ID, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
+        Cursor mCursor = writableDb.query(NOTEBOOK_TABLE_NAME, null, null, null, null, null, NOTEBOOK_ID, null);
+//        if (mCursor != null) {
+//            mCursor.moveToFirst();
+//        }
         return mCursor;
     }
 
+    /**
+     * deletes everything
+     */
+    public void reset(){
+        writableDb.delete(NOTEBOOK_TABLE_NAME,null,null);
+        writableDb.delete(PAGES_TABLE_NAME,null,null);
+    }
 
     public void close(){
-        pagesDb.close();
+        writableDb.close();
     }
 
 
