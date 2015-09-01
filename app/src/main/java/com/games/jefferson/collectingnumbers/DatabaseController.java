@@ -35,7 +35,7 @@ public class DatabaseController {
     }
 
     /**
-     *
+     * puts a new page into the db
      * @param notebookId
      * @param pageNo
      * @param bookmark
@@ -51,6 +51,14 @@ public class DatabaseController {
         return writableDb.insert(PAGES_TABLE_NAME, null, values);
     }
 
+    /**
+     * updates an existing page in the db
+     * @param notebookId
+     * @param pageNo
+     * @param bookmark
+     * @param pageText
+     * @return
+     */
     public int updatePage(int notebookId, int pageNo, boolean bookmark, String pageText){
         ContentValues values = new ContentValues();
         values.put(PAGES_ID, notebookId);
@@ -101,7 +109,15 @@ public class DatabaseController {
         return writableDb.update(NOTEBOOK_TABLE_NAME, values, NOTEBOOK_ID + " = " + notebookId, null);
     }
 
+    public int updateTitle(int notebookId, String title){
+        ContentValues values = new ContentValues();
+        values.put(NOTEBOOK_TITLE, title);
+        return writableDb.update(NOTEBOOK_TABLE_NAME, values, NOTEBOOK_ID + " = " + notebookId, null);
+    }
 
+    public int deleteNotebook(int notebookId){
+        return writableDb.delete(NOTEBOOK_TABLE_NAME, NOTEBOOK_ID + " = " + notebookId, null);
+    }
     /**
      * gets all the notebooks in the databse
      * @return
@@ -122,6 +138,7 @@ public class DatabaseController {
         return mCursor;
     }
 
+    //-----------------------------------------------------------------------------------------
     /**
      * deletes everything
      */

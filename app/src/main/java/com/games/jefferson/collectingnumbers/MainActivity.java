@@ -1,7 +1,6 @@
 package com.games.jefferson.collectingnumbers;
 
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         notebookList.clear();
         myNotebooks.removeAllViews();
-
+        notebookCount = 0;
         //load the notebooks into the notebook list
         notebooksDb = new DatabaseController(getApplicationContext());
         Cursor notebookCursor = notebooksDb.getNotebooks();
@@ -71,15 +70,17 @@ public class MainActivity extends AppCompatActivity {
                 int notebookIndex = notebookCursor.getInt(1);
                 int imgId = notebookCursor.getInt(2);
                 int recentPage = notebookCursor.getInt(3);
+                if (notebookIndex > notebookCount){
+                    notebookCount = notebookIndex;
+                }
                 Notebook newNotebook = new Notebook(title, notebookIndex, imgId, recentPage, mainLayout);
                 notebookList.add(newNotebook);
-                myNotebooks.addView(newNotebook.getButton());
+                myNotebooks.addView(newNotebook.getView());
             }
             noNotebooks.setVisibility(View.GONE);
         }
-
+        notebookCount++;
         //notebook counter text setup
-        notebookCount = notebookList.size(); //will need to change when deleting notebooks is a thing
         buttonCountText = (TextView)findViewById(R.id.count1);
         buttonCountText.setText("Notebooks Added: " + notebookCount);
     }
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
         //add last element of the array
         notebookList.add(newNotebook);
-        myNotebooks.addView(newNotebook.getButton());
+        myNotebooks.addView(newNotebook.getView());
 
         //save the new notebook to memory
         notebooksDb.addNotebook(title, newNotebook.getIndex(), imgId, newNotebook.getRecent());
@@ -195,6 +196,37 @@ public class MainActivity extends AppCompatActivity {
 
         //remove the new notebook prompt
         createNotePopup.dismiss();
+    }
+
+    /**
+     * remove a notebook from existence
+     * @param view
+     * @param notebookId
+     */
+    public void deleteNotebook(View view, int notebookId){
+        Notebook temp = notebookList.get(0);
+
+        //retrieve notebook object
+        for (Notebook n: notebookList){
+            if(n.getIndex() == notebookId){
+                temp = n;
+                break;
+            }
+        }
+
+        //remove from view
+        myNotebooks.removeView(temp.getView());
+
+        //remove from notebookList
+        notebookList.remove(temp);
+
+        //remove from database
+        notebooksDb.deleteNotebook(notebookId);
+
+        //show deletion
+        AlertDialog.Builder creationAlert = new AlertDialog.Builder(view.getContext());
+        creationAlert.setMessage("notebook deleted");
+        creationAlert.show();
     }
 
     @Override

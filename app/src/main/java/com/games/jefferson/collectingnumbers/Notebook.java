@@ -1,5 +1,6 @@
 package com.games.jefferson.collectingnumbers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class Notebook {
         return index;
     }
 
-    public LinearLayout getButton(){
+    public LinearLayout getView(){
         return minNotebook;
     }
 
@@ -109,7 +110,6 @@ public class Notebook {
             }
         });
 
-
         //creating delete button
         Button delete = new Button(view.getContext());
         delete.setText("del");
@@ -119,9 +119,10 @@ public class Notebook {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity frame = (MainActivity)v.getContext();
+                frame.deleteNotebook(v, index);
             }
         });
-
 
         minNotebook = minNote;
     }
