@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- *
- *
+ * Provides specialized methods for controlling the database
+ *  an ER diagram of the database is available
  * Created by jeff on 7/28/2015.
  */
 public class DatabaseController {

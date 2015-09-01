@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
+ * The actual database class. Creates the database.
+ * an ER diagram of the database is available
  * Created by jeff on 7/26/2015.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {

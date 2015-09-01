@@ -7,7 +7,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 /**
- * The notebook objects
+ * The notebook information holder
+ * used to instantiate an object with the notebook information from the database
  * Created by jeff on 7/28/2015.
  */
 public class Notebook {

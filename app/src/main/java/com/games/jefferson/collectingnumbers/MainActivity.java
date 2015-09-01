@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * The activity the application starts on
+ * Views include the list of notebooks
+ */
 public class MainActivity extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.games.jefferson.collectingnumbers.MESSAGE";
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Notebook> notebookList = new ArrayList<>();
     TextView noNotebooks;
     File wallFile;
-    EditText wallText;
+    LinedEditText wallText;
     PopupWindow createNotePopup;
     LinearLayout mainLayout;
     DatabaseController notebooksDb;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         //load the wall text
         wallFile = new File(getApplicationContext().getFilesDir(), "wall.txt");
-        wallText = (EditText)findViewById(R.id.edit_message);
+        wallText = (LinedEditText)findViewById(R.id.edit_message);
         wallText.setText(loadText(wallFile));
 
         //setting up the popup for creating notebooks
@@ -61,9 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
         //the layout that holds the notebooks
         myNotebooks = (LinearLayout)findViewById(R.id.notebooks);
+    }
+
+    protected void onStart(){
+        super.onStart();
+        notebookList.clear();
+        myNotebooks.removeAllViews();
 
         //load the notebooks into the notebook list
-
         notebooksDb = new DatabaseController(getApplicationContext());
         Cursor notebookCursor = notebooksDb.getNotebooks();
         if(notebookCursor != null && notebookCursor.getCount()>0) {
@@ -85,10 +93,6 @@ public class MainActivity extends AppCompatActivity {
         buttonCountText.setText("Notebooks Added: " + notebookCount);
     }
 
-    protected void onStart(){
-        super.onStart();
-    }
-
     /**
      * attempts to load the src file into the string. if the file doesn't exist, create it
      * @param src
@@ -99,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
         if(src.exists()){ //load the file
             try {
                 Scanner fileScanner = new Scanner(src).useDelimiter("\\Z");
-                loadedText += fileScanner.next();
+                if(fileScanner.hasNext())
+                    loadedText += fileScanner.next();
                 fileScanner.close();
-
             } catch (IOException e){
                 AlertDialog.Builder creationAlert = new AlertDialog.Builder(getApplicationContext());
                 creationAlert.setMessage("File unable to be created"+e.getMessage());
@@ -224,11 +228,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy(){
-        super.onDestroy();
+    protected void onStop(){
+        super.onStop();
         notebooksDb.close();
     }
-
-
-
 }

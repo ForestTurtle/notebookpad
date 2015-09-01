@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-
+/**
+ * Not Used.
+ */
 public class AddNotebookActivity extends AppCompatActivity {
 
     @Override

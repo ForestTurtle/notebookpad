@@ -2,22 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
     android:orientation = "vertical"
     android:id="@+id/main_wall">
 
-    <EditText
+    <com.games.jefferson.collectingnumbers.LinedEditText
         android:id="@+id/edit_message"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:hint="@string/edit_message"
-        android:drawablePadding="2px"
         android:layout_weight="1"
         android:gravity="top"
-        android:inputType="textMultiLine"
+        android:maxLines="24"
         />
 
     <HorizontalScrollView
