@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * The notebook information holder
@@ -20,7 +21,7 @@ public class Notebook {
     private int index; //unique for this notebook
     private int recent;
     private int image; //the number for the inmage
-    private Button button;
+    private LinearLayout minNotebook;
 
     public Notebook(String t, int i, int img, View v){
         this(t,i,img,0, v);
@@ -31,10 +32,8 @@ public class Notebook {
         index = i;
         image = img;
         recent = r;
-        createNotebookButton(v);
+        createNotebookView(v);
     }
-
-
 
     public String getTitle() {
         return title;
@@ -42,7 +41,8 @@ public class Notebook {
 
     public void setTitle(String title) {
         this.title = title;
-        button.setText(title);
+        TextView temp = (TextView)minNotebook.getChildAt(0);
+        temp.setText(title);
     }
 
     public int getImage() {
@@ -66,30 +66,64 @@ public class Notebook {
         return index;
     }
 
-    public Button getButton(){
-        return button;
+    public LinearLayout getButton(){
+        return minNotebook;
     }
 
     /**
      * Helper method to create the notebook button on the screen
      */
-    private void createNotebookButton(View view){
-
-        //creating a new notebook button
-        Button temp = new Button(view.getContext());
-        temp.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+    private void createNotebookView(View view){
+        //creating the layout to hold the notebook
+        LinearLayout minNote = new LinearLayout(view.getContext());
+        minNote.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                 , ViewGroup.LayoutParams.WRAP_CONTENT));
-        temp.setText(title);
-        temp.setId(index); //the notebook id
+        minNote.setId(index); //notebook id
 
-        temp.setOnClickListener(new View.OnClickListener() {
+
+        //creating the title of the notebook
+        TextView title = new TextView(minNote.getContext());
+        title.setText(this.title);
+        minNote.addView(title);
+        title.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT, .2f));
+        title.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                //sendMessage(v);
+            public void onClick(View v){
                 goToNotebook(v);
             }
         });
-        button = temp;
+
+
+        //creating the edit button
+        Button edit = new Button(view.getContext());
+        edit.setText("edit");
+        minNote.addView(edit);
+        edit.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sendMessage(v);
+                //goToNotebook(v);
+            }
+        });
+
+
+        //creating delete button
+        Button delete = new Button(view.getContext());
+        delete.setText("del");
+        minNote.addView(delete);
+        delete.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+
+        minNotebook = minNote;
     }
     /**
      * changes the activity to the corresponding notebook

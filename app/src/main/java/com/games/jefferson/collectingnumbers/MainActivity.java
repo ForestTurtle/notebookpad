@@ -16,10 +16,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 
-import java.io.BufferedWriter;
 import java.io.File;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -37,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout myNotebooks;
     ArrayList<Notebook> notebookList = new ArrayList<>();
     TextView noNotebooks;
-    File wallFile;
-    LinedEditText wallText;
     PopupWindow createNotePopup;
     LinearLayout mainLayout;
     DatabaseController notebooksDb;
@@ -51,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         noNotebooks = (TextView)findViewById(R.id.nonotebooks);
         mainLayout = (LinearLayout)findViewById(R.id.main_wall);
-
-        //load the wall text
-        wallFile = new File(getApplicationContext().getFilesDir(), "wall.txt");
-        wallText = (LinedEditText)findViewById(R.id.edit_message);
-        wallText.setText(loadText(wallFile));
 
         //setting up the popup for creating notebooks
         createNotePopup = new PopupWindow(this);
@@ -126,14 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onPause(){
         super.onPause();
-        //save the text of the wall
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(wallFile, false));
-            bw.write(wallText.getText().toString());
-            bw.close();
-        } catch (IOException e){
-
-        }
     }
 
     @Override
@@ -152,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id){
             case R.id.action_settings:
-                sendMessage(this.getCurrentFocus());
                 return true;
             case R.id.action_search:
                 //notebookList.get(0).setTitle("test");
@@ -162,18 +144,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    /**
-     * for debugging purposes
-     * @param view
-     */
-    public void sendMessage(View view){
-        Intent intent = new Intent(this, AddNotebookActivity.class);
-        String message = wallText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
-
     /**
      * helper method that opens the popup prompting the user to make a new notebook
      * @param view
